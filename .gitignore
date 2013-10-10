@@ -27,3 +27,7 @@ proguard/
 *.ipr
 *.iws
 .idea/
+# Temporary files left over by editors
+?*~
+#?*#
+
