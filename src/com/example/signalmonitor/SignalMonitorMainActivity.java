@@ -54,7 +54,7 @@ public class SignalMonitorMainActivity extends Activity {
         public void onServiceConnected(ComponentName className, IBinder service) {
                 Log.i("openxc", "Bound to VehicleManager");
                 mVehicleManager = ((VehicleManager.VehicleBinder) service).getService();
-                Log.i(TAG, "mVehicleManager = " + mVehicleManager.toString());
+                //Log.i(TAG, "mVehicleManager = " + mVehicleManager.toString());
                 // He forgot to say this 'try' would be necessary                                                                                                                          
                 try {
                         mVehicleManager.addListener(VehicleSpeed.class, mSpeedListener); // TODO:modify to read choice of signal from Watcher.txt and do condition test                    
@@ -100,7 +100,7 @@ public void onResume() {
 }
 
 private void triggerFound() {
-	Log.i(TAG, "triggerFound called");
+	Log.i(TAG, "triggerFound called: Vehicle speed > 35km/h.");
 }
 // creation time:                                                                                                                                                                          
 VehicleSpeed.Listener mSpeedListener = new VehicleSpeed.Listener() {
@@ -108,18 +108,17 @@ VehicleSpeed.Listener mSpeedListener = new VehicleSpeed.Listener() {
                 final VehicleSpeed speed = (VehicleSpeed) measurement;
                 SignalMonitorMainActivity.this.runOnUiThread(new Runnable() {
                         public void run() {
+                        	//Log.i(TAG, "VehicleSpeedListener called");
                         }
                 });
                 // "do stuff with the measurement"                                                                                                                                         
-                // what I do is test against a criterion.                                                                                                                                  
-                if (signal_threshold.equals(">")) { // decide which test to do -- for now, just this one.                                                                                  
-                        Log.i(TAG, "Testing for speed > " + Double.parseDouble(signal_threshold));
-                        if (speed.getValue().doubleValue() < Double.parseDouble(signal_threshold)) {
+                // what I do is test against a criterion, now simplified to "Vehicle speed greater than 35".                                                                                                                                  
+                        //Log.i(TAG, "Testing for speed > " + "35.0");
+                        if (speed.getValue().doubleValue() > 35.0) {
                                 triggerFound();
                         }
                 }
-        }
-};
+        };
 
 
 }
