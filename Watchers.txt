@@ -1,0 +1,3 @@
+{"threshold_type":">","team_id":6,"vehicle_speed":35}
+{"threshold_type":">","team_id":6,"engine_speed":350}
+
