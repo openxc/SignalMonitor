@@ -54,7 +54,7 @@ public class SignalMonitorMainActivity extends Activity {
 	JSONObject watchersObject;
 	String signal_name;
 	String threshold_type;
-BufferedReader br = null;
+    BufferedReader br = null;
 	{
 		try {
 		    br = new BufferedReader(new FileReader(watchersFile));
@@ -103,13 +103,19 @@ BufferedReader br = null;
 						Log.e(TAG, "UnsupportedOperationException reading from newly created JSONObject" + boohoo.getMessage()); // we should never get here
 					} finally {
 						Log.e(TAG, "Parsed JSON object for team_id, threshold_type and signal name");
-						setListeners (threshold_type, signal_name); 
+						//setListeners (threshold_type, signal_name); 
 					}
 			}
 				} catch (IOException e) { Log.e(TAG, "Exception reading Watchers file" + e.getMessage());
 				} finally {
 					try {br.close();} catch(IOException ee) {Log.e(TAG, "Exception closing buffered reader"); } //TODO: obviate ts
 		Log.i(TAG, "Got it all");
+		// triggerFound();
+		Class postalClass = PostalService.class;
+		Log.i(TAG, "PoastalService.class = " + postalClass.toString());
+		Intent newIntent = new Intent(this, postalClass);
+		startService(newIntent);
+		Log.i(TAG, "started PostalService");
 		}
 	}
 
@@ -122,15 +128,25 @@ BufferedReader br = null;
 	 */
 	private void setListeners( String threshold, String sig) {
 		Log.i(TAG, "Stub for setting Listener for signal " + sig + " and threshold " + threshold + ".");
-		signal_threshold = threshold;
+		signal_threshold = threshold; // not actually using these yet
+		try {
+			mVehicleManager.addListener(VehicleSpeed.class, mSpeedListener);
+		} catch (VehicleServiceException e) {
+			// TODO Auto-generated catch block
+			Log.e(TAG, e.getMessage());
+
+		} catch (UnrecognizedMeasurementTypeException e) {
+			// TODO Auto-generated catch block
+			Log.e(TAG, e.getMessage());
+		} // TODO:modify to read choice of signal from Watcher.txt and do condition test
+
 	}
 	
 	private ServiceConnection mConnection = new ServiceConnection() {
 		// Called when the connection with the service is established
 		public void onServiceConnected(ComponentName className, IBinder service) {
 			Log.i("openxc", "Bound to VehicleManager");
-			mVehicleManager = ((VehicleManager.VehicleBinder) service)
-					.getService();
+			mVehicleManager = ((VehicleManager.VehicleBinder) service).getService();
 			// He forgot to say this 'try' would be necessary
 			try {
 				mVehicleManager.addListener(VehicleSpeed.class, mSpeedListener); // TODO:modify to read choice of signal from Watcher.txt and do condition test
@@ -162,7 +178,8 @@ BufferedReader br = null;
 			});
 			// "do stuff with the measurement"
 			// what I do is test against a criterion.
-			if (signal_threshold.equals("<")) { // decide which test to do
+			if (signal_threshold.equals(">")) { // decide which test to do -- for now, just this one.
+				Log.i(TAG, "Testing for speed > " + Double.parseDouble(signal_threshold));
 				if (speed.getValue().doubleValue() < Double.parseDouble(signal_threshold)) {
 					triggerFound();
 				}
@@ -175,7 +192,16 @@ BufferedReader br = null;
 	 */
 	private void triggerFound() {
 		Log.i(TAG, "stub for triggerFound called");
-		this.startService(new Intent(this, PostalService.class)); // "set and forget" via IntentService
+try {
+		Intent intent;
+		intent = new Intent(this, PostalService.class);
+		Log.i(TAG, "new intent: " + intent.toString());
+
+		this.startService(intent); // "set and forget" via IntentService
+} catch (Exception e) { 
+	Log.e(TAG, e.getMessage());
+	
+}
 	}
 	
 	protected void onStart() {
