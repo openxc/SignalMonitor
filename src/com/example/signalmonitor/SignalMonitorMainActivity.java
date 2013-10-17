@@ -111,11 +111,9 @@ public class SignalMonitorMainActivity extends Activity {
 					try {br.close();} catch(IOException ee) {Log.e(TAG, "Exception closing buffered reader"); } //TODO: obviate ts
 		Log.i(TAG, "Got it all");
 		// triggerFound();
-		Class postalClass = PostalService.class;
-		Log.i(TAG, "PoastalService.class = " + postalClass.toString());
-		Intent newIntent = new Intent(this, postalClass);
+		/*Intent newIntent = new Intent(this, PostalService.class);
 		startService(newIntent);
-		Log.i(TAG, "started PostalService");
+		Log.i(TAG, "started PostalService"); */
 		}
 	}
 
