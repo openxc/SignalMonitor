@@ -69,7 +69,7 @@ public class SignalMonitorMainActivity extends Activity {
      * @param threshold
      * @param sig
      * This will create a Listener for the given signal and this listener in turn will do the test indicated
-     * by threshold, calling triggerFound() to start sending all the data up to SAP server.
+     * by threshold, calling uploadSnapshot() to start sending all the data up to SAP server.
      */
     private void setListeners( String threshold, String sig) {
         Log.i(TAG, "Stub for setting Listener for signal " + sig + " and threshold " + threshold + ".");
@@ -85,22 +85,6 @@ public class SignalMonitorMainActivity extends Activity {
             Log.e(TAG, e.getMessage());
         } // TODO:modify to read choice of signal from Watcher.txt and do condition test
 
-    }
-
-    /**
-     * When the trigger is found, we are to send up the data via our "Postal Service"
-     */
-    private void triggerFound() {
-        try {
-            Intent intent;
-            intent = new Intent(this, PostalService.class);
-            Log.i(TAG, "new intent: " + intent.toString());
-
-            this.startService(intent); // "set and forget" via IntentService
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
-
-        }
     }
 
     protected void onStart() {
@@ -194,7 +178,7 @@ public class SignalMonitorMainActivity extends Activity {
             Log.i(TAG, "triggers[0] = " + triggers[0]);
             Log.i(TAG, "triggers[1] = " + triggers[1]);
 
-            // triggerFound();
+            // uploadSnapshot();
             /*Intent newIntent = new Intent(this, PostalService.class);
               startService(newIntent);
               Log.i(TAG, "started PostalService"); */
@@ -226,6 +210,14 @@ public class SignalMonitorMainActivity extends Activity {
 
     public void onTrigger() {
         Intent intent = new Intent(this, PostalService.class);
+        startService(intent);
+    }
+
+    private void uploadSnapshot() {
+        Intent intent = new Intent(this, PostalService.class);
+        intent.putExtra(PostalService.INTENT_EXTRA_DATA_FLAG,
+                mSnapshotSink.generateSnapshot());
+        Log.i(TAG, "triggering PostalService with: " + intent);
         startService(intent);
     }
 

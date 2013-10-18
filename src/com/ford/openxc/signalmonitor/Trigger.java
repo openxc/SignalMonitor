@@ -23,8 +23,6 @@ public class Trigger {
     }
 
     /**
-     * I think I can make this private, since it will only be in
-     * uploadConditionally()
      *
      * Status: works
      */
@@ -39,15 +37,6 @@ public class Trigger {
             return (this.value.equals(val));
         } else
             return false;
-    }
-
-    public void uploadConditionally(Trigger aTrigger, String value) {
-        if (aTrigger.test(value)) {
-            Log.i(TAG, "Speed threshold met");
-            // TODO
-            // SignalMonitorMainActivity.makeSnapshot();
-            // SignalMonitorMainActivity.uploadSnapshot();
-        }
     }
 
 }

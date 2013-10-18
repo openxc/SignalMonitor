@@ -33,7 +33,7 @@ public class VehicleSnapshotSink extends BaseVehicleDataSink {
     // code from there but you would have to make sure the server side was
     // looking for this format first.
     //
-    public String generateSnapshot() {
+    public synchronized String generateSnapshot() {
         StringBuffer sb = new StringBuffer();
         for(RawMeasurement measurement : mMeasurements.values()) {
             sb.append(measurement.serialize());
