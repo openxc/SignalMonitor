@@ -18,14 +18,14 @@ import android.util.Log;
  */
 public class PostalService extends IntentService {
 
-	public PostalService(String name) {
-		super(name);
-		// TODO Auto-generated constructor stub
-	}
+    public PostalService(String name) {
+        super(name);
+        // TODO Auto-generated constructor stub
+    }
 
-	private String TAG = "SignalMonitor:PostalService: ";
+    private String TAG = "SignalMonitor:PostalService: ";
 
-	private String stubData =
+    private String stubData =
 "[{\"timestamp\": \"1351181673.5829988\", \"name\": \"accelerator_pedal_position\", \"value\": \"0.0\"} ];";
 
 /*"{\"timestamp\": 1351181673.5879989, \"name\": \"engine_speed\", \"value\": 0.0}," +
@@ -51,45 +51,45 @@ public class PostalService extends IntentService {
 */
 
 
-	public PostalService() {
-		super("PostalService");
-	}
-	@Override
-	protected void onHandleIntent(Intent intent) {
-		Log.d("IntentService", "onHandleIntent Start");
+    public PostalService() {
+        super("PostalService");
+    }
+    @Override
+    protected void onHandleIntent(Intent intent) {
+        Log.d("IntentService", "onHandleIntent Start");
 
 
-		String responseContents = null;
-		try {
-			DefaultHttpClient httpClient = new DefaultHttpClient();
+        String responseContents = null;
+        try {
+            DefaultHttpClient httpClient = new DefaultHttpClient();
 
-			HttpPost httpPost = new HttpPost("http://shatechcrunchhana.sapvcm.com:8000/Ford/services/fordstatus.xsodata/FordStatus");
-			//HttpPost httpPost = new HttpPost("http://shacricketwin.sapvcm.com:8080/FordData_v2/fordxctest_vs.jsp");
-			// This is where we will set up the post data itself, then
-			// call post.setEntity(<data here>); // BEFORE httpClient.execute // for now I will use my array from the email
-			StringEntity stringEntity = new StringEntity (stubData, "UTF-8");
-			httpPost.addHeader("Content-type", "application/json; charset=utf-8");
-			httpPost.setEntity(stringEntity);
-			HttpResponse httpResponse = httpClient.execute(httpPost);
-			int statusCode = httpResponse.getStatusLine().getStatusCode();
-			Log.i(TAG, "POST ret. code: " + statusCode);
-			HttpEntity httpEntity = httpResponse.getEntity();
-			responseContents = EntityUtils.toString(httpEntity); // which I barely care about now, since I change to POST.
+            HttpPost httpPost = new HttpPost("http://shatechcrunchhana.sapvcm.com:8000/Ford/services/fordstatus.xsodata/FordStatus");
+            //HttpPost httpPost = new HttpPost("http://shacricketwin.sapvcm.com:8080/FordData_v2/fordxctest_vs.jsp");
+            // This is where we will set up the post data itself, then
+            // call post.setEntity(<data here>); // BEFORE httpClient.execute // for now I will use my array from the email
+            StringEntity stringEntity = new StringEntity (stubData, "UTF-8");
+            httpPost.addHeader("Content-type", "application/json; charset=utf-8");
+            httpPost.setEntity(stringEntity);
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+            int statusCode = httpResponse.getStatusLine().getStatusCode();
+            Log.i(TAG, "POST ret. code: " + statusCode);
+            HttpEntity httpEntity = httpResponse.getEntity();
+            responseContents = EntityUtils.toString(httpEntity); // which I barely care about now, since I change to POST.
 
-		} catch (Exception e) {
-			Log.e(TAG, "Uh, oh");
-			e.printStackTrace();
-		}
-		if (responseContents.length() < 1000) {
-			Log.e(TAG, "retrieved: " + responseContents);
-		} else {
-			Log.e(TAG, "retrieved " + responseContents.length() + " chars");
-			StringBuilder sb = new StringBuilder();
-			for (int i = 0; i < 500; i++) {
-				sb.append(responseContents.charAt(i));
-			}
-			Log.i(TAG, "first 500: " + sb);
-		}
-	}
+        } catch (Exception e) {
+            Log.e(TAG, "Uh, oh");
+            e.printStackTrace();
+        }
+        if (responseContents.length() < 1000) {
+            Log.e(TAG, "retrieved: " + responseContents);
+        } else {
+            Log.e(TAG, "retrieved " + responseContents.length() + " chars");
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < 500; i++) {
+                sb.append(responseContents.charAt(i));
+            }
+            Log.i(TAG, "first 500: " + sb);
+        }
+    }
 
 }
