@@ -26,8 +26,10 @@ public class Trigger {
      *
      * Status: under test
      * val is ultimately from a Measurement, .value a threshold value from Watchers.txt
+     * Threshold is considered met when trigger(threshold) value < current val for '<' etc. 
      */
     public boolean test(double val) {
+    	Log.i(TAG, "testing value= " + value + "val = " + val);
         if (this.testCriterion == "<") {
             return (value < val);
         } else if (this.testCriterion == ">") {
@@ -35,5 +37,4 @@ public class Trigger {
         } else
             return false;
     }
-
 }
