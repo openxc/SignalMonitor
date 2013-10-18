@@ -35,6 +35,8 @@ public class PostalService extends IntentService {
         DefaultHttpClient httpClient = new DefaultHttpClient();
 
         HttpPost httpPost = new HttpPost("http://shatechcrunchhana.sapvcm.com:8000/Ford/services/fordstatus.xsodata/FordStatus");
+        // Uncomment above for Ford's server, though this is the wrong one.
+        //HttpPost httpPost = new HttpPost("http://192.168.2.160:5000"); // my current local IP on computer.
         //HttpPost httpPost = new HttpPost("http://shacricketwin.sapvcm.com:8080/FordData_v2/fordxctest_vs.jsp");
         StringEntity stringEntity = null;
         try {

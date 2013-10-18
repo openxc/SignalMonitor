@@ -179,10 +179,6 @@ public class SignalMonitorMainActivity extends Activity {
             Log.i(TAG, "triggers[0] = " + triggers[0]);
             Log.i(TAG, "triggers[1] = " + triggers[1]);
 
-            uploadSnapshot();
-            /*Intent newIntent = new Intent(this, PostalService.class);
-              startService(newIntent);
-              Log.i(TAG, "started PostalService"); */
         }
     }
 
@@ -225,7 +221,7 @@ public class SignalMonitorMainActivity extends Activity {
             // what I do is test against a criterion, using my new Trigger class
             Trigger ourTrigger = NamesToTriggers.get("vehicle_speed");
             if(ourTrigger != null) {
-                Log.i(TAG, "Testing for speed " + ourTrigger.testCriterion + " speed");
+                //Log.i(TAG, "Testing for speed " + ourTrigger.testCriterion + " speed");
                 if (ourTrigger.test(speed.getValue().doubleValue())) {
                     Log.i(TAG, "vehicle speed test passed");
                     uploadSnapshot();
@@ -242,7 +238,7 @@ public class SignalMonitorMainActivity extends Activity {
             // what I do is test against a criterion, using my new Trigger class
             Trigger ourTrigger = NamesToTriggers.get("engine_speed");
             if(ourTrigger != null) {
-                Log.i(TAG, "Testing for engine speed " + ourTrigger.testCriterion + " speed");
+                //Log.i(TAG, "Testing for engine speed " + ourTrigger.testCriterion + " speed");
                 if (ourTrigger.test(speed.getValue().doubleValue())){
                     Log.i(TAG, "engine speed test passed");
                     uploadSnapshot();
@@ -268,6 +264,9 @@ public class SignalMonitorMainActivity extends Activity {
             } catch (UnrecognizedMeasurementTypeException e) {
                 Log.e(TAG, "Unrecognized Measurment type: " + e.toString());
             }
+            // and now try using it, test Snapshot:
+            uploadSnapshot(); // for testing uploadSnapshot only.
+
         }
 
         // Called when the connection with the service disconnects unexpectedly

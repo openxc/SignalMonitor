@@ -24,13 +24,14 @@ public class Trigger {
 
     /**
      *
-     * Status: works
+     * Status: under test
+     * val is ultimately from a Measurement, .value a threshold value from Watchers.txt
      */
     public boolean test(double val) {
         if (this.testCriterion == "<") {
             return (value < val);
         } else if (this.testCriterion == ">") {
-            return (value < val);
+            return (value > val);
         } else
             return false;
     }
