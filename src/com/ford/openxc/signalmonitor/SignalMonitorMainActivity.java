@@ -40,7 +40,6 @@ public class SignalMonitorMainActivity extends Activity {
     // per the tutorial, at object creation time:
     private VehicleManager mVehicleManager;
     private VehicleSnapshotSink mSnapshotSink = new VehicleSnapshotSink();
-    private boolean mBound = false;
     private static String TAG = "SignalMonitor";
     private String signal_threshold = "<"; // the default.
 
@@ -177,7 +176,6 @@ public class SignalMonitorMainActivity extends Activity {
 
             mVehicleManager = ((VehicleManager.VehicleBinder) service).getService();
             mVehicleManager.addSink(mSnapshotSink);
-            mBound = true;
 
             // He forgot to say this 'try' would be necessary
             try {
@@ -193,7 +191,6 @@ public class SignalMonitorMainActivity extends Activity {
         public void onServiceDisconnected(ComponentName className) {
             Log.w(TAG, "VehicleService disconnected unexpectedly");
             mVehicleManager = null;
-            mBound = false;
         }
     };
 
@@ -248,8 +245,9 @@ try {
         super.onStart();
 
         Intent intent = new Intent(this, VehicleManager.class);
-        if (!mBound)
-            mBound = bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        if(mVehicleManager == null) {
+            bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        }
     }
 
     private TextView mVehicleSpeedView;
@@ -264,19 +262,16 @@ try {
     public void onPause() {
         super.onPause();
         Log.i(TAG, "Unbinding from vehicle service");
-        unbindService(mConnection);
-        mBound = false;
+        if(mVehicleManager != null) {
+            unbindService(mConnection);
+        }
     }
 
     public void onResume() {
         super.onResume();
-        if (!mBound) {
+        if(mVehicleManager == null) {
             Intent intent = new Intent(this, VehicleManager.class);
-            mBound = bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-            if (mBound)
-                Log.i(TAG, "Binding to Vehicle Manager");
-            else
-                Log.e(TAG, "Failed to bind to Vehicle Manager");
+            bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         }
     }
 
