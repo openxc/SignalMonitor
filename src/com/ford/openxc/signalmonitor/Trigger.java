@@ -44,8 +44,9 @@ public class Trigger {
     public void uploadConditionally(Trigger aTrigger, String value) {
         if (aTrigger.test(value)) {
             Log.i(TAG, "Speed threshold met");
-             // SignalMonitorMainActivity.makeSnapshot();
-             SignalMonitorMainActivity.uploadSnapshot();
+            // TODO
+            // SignalMonitorMainActivity.makeSnapshot();
+            // SignalMonitorMainActivity.uploadSnapshot();
         }
     }
 
