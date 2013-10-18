@@ -195,16 +195,11 @@ public class SignalMonitorMainActivity extends Activity {
 	private ServiceConnection mConnection = new ServiceConnection() {
 		// Called when the connection with the service is established
 		public void onServiceConnected(ComponentName className, IBinder service) {
-			Log.i("openxc", "Bound to VehicleManager");
+			Log.i(TAG, "Bound to VehicleManager");
 			mVehicleManager = ((VehicleManager.VehicleBinder) service).getService();
-			// He forgot to say this 'try' would be necessary
-			try {
-				mVehicleManager.addListener(VehicleSpeed.class, mSpeedListener);
-			} catch (VehicleServiceException e) {
-				Log.e(TAG, "Vehicle Service Exception " + e.toString());
-			} catch (UnrecognizedMeasurementTypeException e) {
-				Log.e(TAG, "Unrecognized Measurment type: " + e.toString());
-			}
+
+			registerListener("vehicle_speed");
+			registerListener("engine_speed");
 		}
 
 		// Called when the connection with the service disconnects unexpectedly
@@ -224,8 +219,8 @@ public class SignalMonitorMainActivity extends Activity {
 			// "do stuff with the measurement"
 			// what I do is test against a criterion, using my new Trigger class
 		    Trigger ourTrigger = NamesToTriggers.get("vehicle_speed");
-			Log.i(TAG, "Testing for speed " + ourTrigger.testCriterion + " speed");
-		    if (ourTrigger.test(speed.toString())) {
+			//Log.i(TAG, "Testing for vehicle speed " + ourTrigger.testCriterion + " speed");
+		    if (ourTrigger.test(speed)) {
                 Log.i(TAG, "vehicle speed test passed");
 		    }
 		}
@@ -237,9 +232,9 @@ public class SignalMonitorMainActivity extends Activity {
 
 			// "do stuff with the measurement"
 			// what I do is test against a criterion, using my new Trigger class
-		    Trigger ourTrigger = NamesToTriggers.get("vehicle_speed");
-			Log.i(TAG, "Testing for engine speed " + ourTrigger.testCriterion + " speed");
-		    if (ourTrigger.test(speed.toString())) {
+		    Trigger ourTrigger = NamesToTriggers.get("engine_speed");
+			//Log.i(TAG, "Testing for engine speed " + ourTrigger.testCriterion + " speed");
+		    if (ourTrigger.test(speed)) {
                 Log.i(TAG, "engine speed test passed");
 		    }
 		}
@@ -311,8 +306,8 @@ try {
 		
 	}
 
-	public void registerListener(String signalName, String threshold,
-			String thresholdValue) {
+	public void registerListener(String signalName) {
+		Log.e(TAG, "registerListener(" + signalName + ") called");
 		try {
 			if (signalName.equals("vehicle_speed"))
 				mVehicleManager.addListener(VehicleSpeed.class, mSpeedListener);

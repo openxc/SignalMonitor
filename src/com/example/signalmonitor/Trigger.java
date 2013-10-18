@@ -1,5 +1,8 @@
 package com.example.signalmonitor;
 
+import com.openxc.measurements.Measurement;
+import com.openxc.units.Unit;
+
 import android.util.Log;
 
 /**                                                                                                                                               
@@ -28,16 +31,23 @@ public class Trigger {
 	 * 
 	 * Status: works
 	 */
-	public boolean test(String val) {
+	public boolean test(Measurement monitoredValue) {
+		Unit aUnit = monitoredValue.getValue();
+		((Double) aUnit).doubleValue();
 		if (this.testCriterion == "<") {
+			Log.i(TAG, "test " + Double.parseDouble(this.value) + " <  " + Double.parseDouble(val));
 			return (Double.parseDouble(this.value) < Double.parseDouble(val));
 		} else if (this.testCriterion == ">") {
+			Log.i(TAG, "test " + Double.parseDouble(this.value) + " <  " + Double.parseDouble(val));
 			return (Double.parseDouble(this.value) < Double.parseDouble(val));
 		} else if (this.testCriterion == "boolean") {
 			return (this.value.equals(true));
 		} else if (this.testCriterion == "state") { // e.g. test(gear_pos, "first")
 			return (this.value.equals(val));
-		} else
+		} else {
+			Log.i(TAG, "we should NEVER get here!");
+			Log.i(TAG, "testCriterion = " + testCriterion + "val = " + val);
+		}
 			return false;
 	}
 	public void uploadConditionally(Trigger aTrigger, String value) {
