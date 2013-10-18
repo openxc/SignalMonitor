@@ -226,7 +226,7 @@ public class SignalMonitorMainActivity extends Activity {
             Trigger ourTrigger = NamesToTriggers.get("vehicle_speed");
             if(ourTrigger != null) {
                 Log.i(TAG, "Testing for speed " + ourTrigger.testCriterion + " speed");
-                if (ourTrigger.test(speed.toString())) {
+                if (ourTrigger.test(speed.getValue().doubleValue())) {
                     Log.i(TAG, "vehicle speed test passed");
                     uploadSnapshot();
                 }
@@ -243,7 +243,7 @@ public class SignalMonitorMainActivity extends Activity {
             Trigger ourTrigger = NamesToTriggers.get("engine_speed");
             if(ourTrigger != null) {
                 Log.i(TAG, "Testing for engine speed " + ourTrigger.testCriterion + " speed");
-                if (ourTrigger.test(speed.toString())) {
+                if (ourTrigger.test(speed.getValue().doubleValue())){
                     Log.i(TAG, "engine speed test passed");
                     uploadSnapshot();
                 }
