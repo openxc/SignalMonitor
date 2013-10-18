@@ -22,7 +22,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.widget.TextView;
 
-import com.example.signalmonitor.R;
 import com.openxc.VehicleManager;
 import com.openxc.measurements.EngineSpeed;
 import com.openxc.measurements.Measurement;
@@ -178,7 +177,7 @@ public class SignalMonitorMainActivity extends Activity {
             Log.i(TAG, "triggers[0] = " + triggers[0]);
             Log.i(TAG, "triggers[1] = " + triggers[1]);
 
-            // uploadSnapshot();
+            uploadSnapshot();
             /*Intent newIntent = new Intent(this, PostalService.class);
               startService(newIntent);
               Log.i(TAG, "started PostalService"); */
@@ -208,11 +207,6 @@ public class SignalMonitorMainActivity extends Activity {
         return true;
     }
 
-    public void onTrigger() {
-        Intent intent = new Intent(this, PostalService.class);
-        startService(intent);
-    }
-
     private void uploadSnapshot() {
         Intent intent = new Intent(this, PostalService.class);
         intent.putExtra(PostalService.INTENT_EXTRA_DATA_FLAG,
@@ -231,11 +225,12 @@ public class SignalMonitorMainActivity extends Activity {
             Log.i(TAG, "Testing for speed " + ourTrigger.testCriterion + " speed");
             if (ourTrigger.test(speed.toString())) {
                 Log.i(TAG, "vehicle speed test passed");
+                uploadSnapshot();
             }
         }
     };
 
-    private EngineSpeed.Listener mEngineSpeed = new EngineSpeed.Listener() {
+    private EngineSpeed.Listener mEngineSpeedListener = new EngineSpeed.Listener() {
         public void receive(Measurement measurement) {
             final EngineSpeed speed = (EngineSpeed) measurement;
 
@@ -245,6 +240,7 @@ public class SignalMonitorMainActivity extends Activity {
             Log.i(TAG, "Testing for engine speed " + ourTrigger.testCriterion + " speed");
             if (ourTrigger.test(speed.toString())) {
                 Log.i(TAG, "engine speed test passed");
+                uploadSnapshot();
             }
         }
     };
@@ -260,6 +256,7 @@ public class SignalMonitorMainActivity extends Activity {
             // He forgot to say this 'try' would be necessary
             try {
                 mVehicleManager.addListener(VehicleSpeed.class, mSpeedListener);
+                mVehicleManager.addListener(EngineSpeed.class, mEngineSpeedListener);
             } catch (VehicleServiceException e) {
                 Log.e(TAG, "Vehicle Service Exception " + e.toString());
             } catch (UnrecognizedMeasurementTypeException e) {
