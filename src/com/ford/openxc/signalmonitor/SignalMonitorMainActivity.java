@@ -224,10 +224,12 @@ public class SignalMonitorMainActivity extends Activity {
             // "do stuff with the measurement"
             // what I do is test against a criterion, using my new Trigger class
             Trigger ourTrigger = NamesToTriggers.get("vehicle_speed");
-            Log.i(TAG, "Testing for speed " + ourTrigger.testCriterion + " speed");
-            if (ourTrigger.test(speed.toString())) {
-                Log.i(TAG, "vehicle speed test passed");
-                uploadSnapshot();
+            if(ourTrigger != null) {
+                Log.i(TAG, "Testing for speed " + ourTrigger.testCriterion + " speed");
+                if (ourTrigger.test(speed.toString())) {
+                    Log.i(TAG, "vehicle speed test passed");
+                    uploadSnapshot();
+                }
             }
         }
     };
@@ -239,10 +241,12 @@ public class SignalMonitorMainActivity extends Activity {
             // "do stuff with the measurement"
             // what I do is test against a criterion, using my new Trigger class
             Trigger ourTrigger = NamesToTriggers.get("engine_speed");
-            Log.i(TAG, "Testing for engine speed " + ourTrigger.testCriterion + " speed");
-            if (ourTrigger.test(speed.toString())) {
-                Log.i(TAG, "engine speed test passed");
-                uploadSnapshot();
+            if(ourTrigger != null) {
+                Log.i(TAG, "Testing for engine speed " + ourTrigger.testCriterion + " speed");
+                if (ourTrigger.test(speed.toString())) {
+                    Log.i(TAG, "engine speed test passed");
+                    uploadSnapshot();
+                }
             }
         }
     };
