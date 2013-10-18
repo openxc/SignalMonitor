@@ -1,11 +1,12 @@
 package com.ford.openxc.signalmonitor;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.entity.StringEntity;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -31,37 +32,31 @@ public class PostalService extends IntentService {
     protected void onHandleIntent(Intent intent) {
         Log.d(TAG, "onHandleIntent Start");
 
-        String responseContents = null;
-        try {
-            DefaultHttpClient httpClient = new DefaultHttpClient();
+        DefaultHttpClient httpClient = new DefaultHttpClient();
 
-            HttpPost httpPost = new HttpPost("http://shatechcrunchhana.sapvcm.com:8000/Ford/services/fordstatus.xsodata/FordStatus");
-            //HttpPost httpPost = new HttpPost("http://shacricketwin.sapvcm.com:8080/FordData_v2/fordxctest_vs.jsp");
-            StringEntity stringEntity = new StringEntity(
+        HttpPost httpPost = new HttpPost("http://shatechcrunchhana.sapvcm.com:8000/Ford/services/fordstatus.xsodata/FordStatus");
+        //HttpPost httpPost = new HttpPost("http://shacricketwin.sapvcm.com:8080/FordData_v2/fordxctest_vs.jsp");
+        StringEntity stringEntity = null;
+        try {
+            stringEntity = new StringEntity(
                     intent.getExtras().getString(INTENT_EXTRA_DATA_FLAG),
                     "UTF-8");
-            httpPost.addHeader("Content-type", "application/json; charset=utf-8");
-            httpPost.setEntity(stringEntity);
-            HttpResponse httpResponse = httpClient.execute(httpPost);
-            int statusCode = httpResponse.getStatusLine().getStatusCode();
-            Log.i(TAG, "POST ret. code: " + statusCode);
-            HttpEntity httpEntity = httpResponse.getEntity();
-            responseContents = EntityUtils.toString(httpEntity); // which I barely care about now, since I change to POST.
-        } catch (Exception e) {
-            Log.e(TAG, "Uh, oh");
-            e.printStackTrace();
+        } catch(UnsupportedEncodingException e) {
+            Log.w(TAG, "Unable to encode snapshot data into UTF-8");
+            return;
         }
 
-        if (responseContents.length() < 1000) {
-            Log.e(TAG, "retrieved: " + responseContents);
-        } else {
-            Log.e(TAG, "retrieved " + responseContents.length() + " chars");
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < 500; i++) {
-                sb.append(responseContents.charAt(i));
-            }
-            Log.i(TAG, "first 500: " + sb);
+        httpPost.addHeader("Content-type", "application/json; charset=utf-8");
+        httpPost.setEntity(stringEntity);
+        HttpResponse response;
+        try {
+            response = httpClient.execute(httpPost);
+        } catch(IOException e) {
+            Log.d(TAG, "Unable to make HTTP request", e);
+            return;
         }
+
+        int statusCode = response.getStatusLine().getStatusCode();
+        Log.i(TAG, "POST ret. code: " + statusCode);
     }
-
 }

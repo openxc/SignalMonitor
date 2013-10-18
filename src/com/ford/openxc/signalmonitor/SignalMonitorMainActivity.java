@@ -56,7 +56,6 @@ public class SignalMonitorMainActivity extends Activity {
     String threshold_type;
     String threshold_value;
     String team_id;
-    BufferedReader br = null;
 
     static String snapshot = null;
 
@@ -100,6 +99,7 @@ public class SignalMonitorMainActivity extends Activity {
         setContentView(R.layout.activity_signal_monitor_main);
         mVehicleSpeedView = (TextView) findViewById(R.id.vehicle_speed);
         int lineNo = 0;
+        BufferedReader br = null;
         try {
             br = new BufferedReader(new FileReader(watchersFile));
             String line=null;
@@ -167,11 +167,13 @@ public class SignalMonitorMainActivity extends Activity {
         } catch (IOException e) {
             Log.e(TAG, "Exception reading Watchers file" + e.getMessage());
         } finally {
-            try {
-                br.close();
-            } catch(IOException ee) {
-                Log.e(TAG, "Exception closing buffered reader");
-            } //TODO: obviate ts
+            if(br != null) {
+                try {
+                    br.close();
+                } catch(IOException ee) {
+                    Log.e(TAG, "Exception closing buffered reader");
+                } //TODO: obviate ts
+            }
             Log.i(TAG, "Got it all");
             Log.i(TAG, "Should be two triggers now:");
             Log.i(TAG, "triggers[0] = " + triggers[0]);
