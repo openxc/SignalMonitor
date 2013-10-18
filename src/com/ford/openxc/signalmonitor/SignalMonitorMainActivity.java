@@ -23,30 +23,11 @@ import android.view.Menu;
 import android.widget.TextView;
 
 import com.example.signalmonitor.R;
-import com.openxc.NoValueException;
 import com.openxc.VehicleManager;
-import com.openxc.measurements.AcceleratorPedalPosition;
-import com.openxc.measurements.BrakePedalStatus;
 import com.openxc.measurements.EngineSpeed;
-import com.openxc.measurements.FuelConsumed;
-import com.openxc.measurements.FuelLevel;
-import com.openxc.measurements.HeadlampStatus;
-import com.openxc.measurements.HighBeamStatus;
-import com.openxc.measurements.IgnitionStatus;
-import com.openxc.measurements.Latitude;
-import com.openxc.measurements.Longitude;
 import com.openxc.measurements.Measurement;
-import com.openxc.measurements.Odometer;
-import com.openxc.measurements.ParkingBrakeStatus;
-import com.openxc.measurements.SteeringWheelAngle;
-import com.openxc.measurements.TorqueAtTransmission;
-import com.openxc.measurements.TransmissionGearPosition;
-import com.openxc.measurements.TurnSignalStatus;
 import com.openxc.measurements.UnrecognizedMeasurementTypeException;
-import com.openxc.measurements.VehicleButtonEvent;
-import com.openxc.measurements.VehicleDoorStatus;
 import com.openxc.measurements.VehicleSpeed;
-import com.openxc.measurements.WindshieldWiperStatus;
 import com.openxc.remote.VehicleServiceException;
 
 /**
@@ -57,7 +38,8 @@ import com.openxc.remote.VehicleServiceException;
 public class SignalMonitorMainActivity extends Activity {
 
     // per the tutorial, at object creation time:
-    private static VehicleManager mVehicleManager;
+    private VehicleManager mVehicleManager;
+    private VehicleSnapshotSink mSnapshotSink = new VehicleSnapshotSink();
     private boolean mBound = false;
     private static String TAG = "SignalMonitor";
     private String signal_threshold = "<"; // the default.
@@ -81,7 +63,6 @@ public class SignalMonitorMainActivity extends Activity {
 
     Trigger[]  triggers = new Trigger[20]; // surely never more than this. // Obsolete already?
     HashMap<String, Trigger> NamesToTriggers = new HashMap<String, Trigger>();
-
 
     int lineNo = 0;
     {
@@ -192,8 +173,12 @@ public class SignalMonitorMainActivity extends Activity {
     private ServiceConnection mConnection = new ServiceConnection() {
         // Called when the connection with the service is established
         public void onServiceConnected(ComponentName className, IBinder service) {
-            Log.i("openxc", "Bound to VehicleManager");
+            Log.i(TAG, "Bound to VehicleManager");
+
             mVehicleManager = ((VehicleManager.VehicleBinder) service).getService();
+            mVehicleManager.addSink(mSnapshotSink);
+            mBound = true;
+
             // He forgot to say this 'try' would be necessary
             try {
                 mVehicleManager.addListener(VehicleSpeed.class, mSpeedListener);
@@ -319,56 +304,6 @@ try {
                 Log.e(TAG, "We should never get here");
         } catch (Exception e) {
             Log.e(TAG, "Exception in registerListener: " + e.getMessage());
-        }
-    }
-
-    static public void makeSnapshot() {
-        StringBuffer sb = new StringBuffer();
-        try {
-            VehicleSpeed rawSpeed = (VehicleSpeed) mVehicleManager.get(VehicleSpeed.class);
-            sb.append(rawSpeed.serialize()); // repeat fr ea msrt
-            TorqueAtTransmission rawTorque = (TorqueAtTransmission) mVehicleManager.get(TorqueAtTransmission.class);
-            AcceleratorPedalPosition rawPedal = (AcceleratorPedalPosition) mVehicleManager.get(AcceleratorPedalPosition.class);
-            sb.append(rawPedal.serialize());
-            BrakePedalStatus rawBrake = (BrakePedalStatus) mVehicleManager.get(BrakePedalStatus.class);
-            sb.append(rawBrake.serialize());
-            EngineSpeed rawRPM = (EngineSpeed) mVehicleManager.get(EngineSpeed.class);
-            sb.append(rawRPM.serialize());
-            FuelConsumed used = (FuelConsumed) mVehicleManager.get(FuelConsumed.class);
-            sb.append(used.serialize());
-            FuelLevel left = (FuelLevel) mVehicleManager.get(FuelLevel.class);
-            sb.append(left.serialize());
-            HeadlampStatus lights = (HeadlampStatus) mVehicleManager.get(HeadlampStatus.class);
-            sb.append(lights.serialize());
-            HighBeamStatus brights = (HighBeamStatus) mVehicleManager.get(HighBeamStatus.class);
-            sb.append(brights.serialize());
-            IgnitionStatus key = (IgnitionStatus) mVehicleManager.get(IgnitionStatus.class);
-            sb.append(key.serialize());
-            Latitude lat = (Latitude) mVehicleManager.get(Latitude.class);
-            sb.append(lat.serialize());
-            Longitude lon = (Longitude) mVehicleManager.get(Longitude.class);
-            sb.append(lon.serialize());
-            Odometer odo = (Odometer) mVehicleManager.get(Odometer.class);
-            sb.append(odo.serialize());
-            ParkingBrakeStatus pbs = (ParkingBrakeStatus) mVehicleManager.get(ParkingBrakeStatus.class);
-            sb.append(pbs.serialize());
-            SteeringWheelAngle swa = (SteeringWheelAngle) mVehicleManager.get(SteeringWheelAngle.class);
-            sb.append(swa.serialize());
-            TransmissionGearPosition tgp = (TransmissionGearPosition) mVehicleManager.get(TransmissionGearPosition.class);
-            sb.append(tgp.serialize());
-            TurnSignalStatus tss = (TurnSignalStatus) mVehicleManager.get(TurnSignalStatus.class);
-            sb.append(tss.serialize());
-            VehicleButtonEvent vbe = (VehicleButtonEvent) mVehicleManager.get(VehicleButtonEvent.class);
-            sb.append(vbe.serialize());
-            VehicleDoorStatus vds = (VehicleDoorStatus) mVehicleManager.get(VehicleDoorStatus.class);
-            sb.append(vds.serialize());
-            WindshieldWiperStatus wws = (WindshieldWiperStatus) mVehicleManager.get(WindshieldWiperStatus.class);
-            sb.append(wws.serialize());
-            snapshot = sb.toString();
-        } catch (NoValueException e) {
-            Log.w(TAG, "The vehicle may not have made the measurement yet");
-        } catch (UnrecognizedMeasurementTypeException e) {
-            Log.w(TAG, "The measurement type was not recognized");
         }
     }
 

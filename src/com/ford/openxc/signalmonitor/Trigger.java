@@ -40,10 +40,11 @@ public class Trigger {
         } else
             return false;
     }
+
     public void uploadConditionally(Trigger aTrigger, String value) {
         if (aTrigger.test(value)) {
             Log.i(TAG, "Speed threshold met");
-             SignalMonitorMainActivity.makeSnapshot();
+             // SignalMonitorMainActivity.makeSnapshot();
              SignalMonitorMainActivity.uploadSnapshot();
         }
     }
