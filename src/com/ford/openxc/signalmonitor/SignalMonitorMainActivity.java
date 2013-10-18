@@ -1,4 +1,4 @@
-package com.example.signalmonitor;
+package com.ford.openxc.signalmonitor;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -6,16 +6,28 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONArray;
 
+import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.IBinder;
+import android.util.Log;
+import android.view.Menu;
+import android.widget.TextView;
+
+import com.example.signalmonitor.R;
 import com.openxc.NoValueException;
 import com.openxc.VehicleManager;
 import com.openxc.measurements.AcceleratorPedalPosition;
 import com.openxc.measurements.BrakePedalStatus;
+import com.openxc.measurements.EngineSpeed;
 import com.openxc.measurements.FuelConsumed;
 import com.openxc.measurements.FuelLevel;
 import com.openxc.measurements.HeadlampStatus;
@@ -34,26 +46,11 @@ import com.openxc.measurements.UnrecognizedMeasurementTypeException;
 import com.openxc.measurements.VehicleButtonEvent;
 import com.openxc.measurements.VehicleDoorStatus;
 import com.openxc.measurements.VehicleSpeed;
-import com.openxc.measurements.EngineSpeed;
 import com.openxc.measurements.WindshieldWiperStatus;
-import com.openxc.remote.RawMeasurement;
 import com.openxc.remote.VehicleServiceException;
 
-import android.os.Bundle;
-import android.os.Environment;
-import android.os.IBinder;
-import android.provider.ContactsContract.Contacts.Data;
-import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.util.Log;
-import android.view.Menu;
-import android.widget.TextView;
-
 /**
- * 
+ *
  * @author mjohn706
  *
  */
@@ -79,12 +76,12 @@ public class SignalMonitorMainActivity extends Activity {
 	String threshold_value;
 	String team_id;
     BufferedReader br = null;
-    
+
     static String snapshot = null;
-    
+
     Trigger[]  triggers = new Trigger[20]; // surely never more than this. // Obsolete already?
     HashMap<String, Trigger> NamesToTriggers = new HashMap<String, Trigger>();
-    
+
 
     int lineNo = 0;
 	{
@@ -108,7 +105,7 @@ public class SignalMonitorMainActivity extends Activity {
 					Log.i(TAG, 	"threshold_type: "	+ threshold_type);
 					team_id =  watchersObject.get("team_id").toString();
 					Log.i(TAG, "team_id: " + team_id);
-					
+
 				} catch (JSONException e) {
 					Log.e(TAG, "Exception reading JSONobject itself from one line of Watchers.txt: " + e.getMessage());
 				} finally {
@@ -136,7 +133,7 @@ public class SignalMonitorMainActivity extends Activity {
 						// use the signal_name to get the value, so:
 						// and now the all important value:
 						threshold_value = watchersObject.getString(signal_name);
-						
+
 					} catch (IllegalStateException e1) {
 						Log.e(TAG, "IllegalStateException reading from newly created JSONObject" + e1.getMessage());
 					} catch (UnsupportedOperationException boohoo) {
@@ -145,11 +142,11 @@ public class SignalMonitorMainActivity extends Activity {
 						Log.e(TAG, e.getMessage());
 					} finally {
 						Log.e(TAG, "Parsed JSON object for team_id, threshold_type and signal name");
-						//setListeners (threshold_type, signal_name); 
+						//setListeners (threshold_type, signal_name);
 					}
 					Log.i(TAG, "lineNo = " + lineNo);
 					triggers[lineNo] = new Trigger(signal_name, threshold_value, threshold_type);
-			        NamesToTriggers.put(signal_name, triggers[lineNo]);		
+			        NamesToTriggers.put(signal_name, triggers[lineNo]);
 					lineNo++;
 			}
 
@@ -161,7 +158,7 @@ public class SignalMonitorMainActivity extends Activity {
 		Log.i(TAG, "Should be two triggers now:");
 		Log.i(TAG, "triggers[0] = " + triggers[0]);
 		Log.i(TAG, "triggers[1] = " + triggers[1]);
-		
+
 		// triggerFound();
 		/*Intent newIntent = new Intent(this, PostalService.class);
 		startService(newIntent);
@@ -170,7 +167,7 @@ public class SignalMonitorMainActivity extends Activity {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param threshold
 	 * @param sig
 	 * This will create a Listener for the given signal and this listener in turn will do the test indicated
@@ -191,7 +188,7 @@ public class SignalMonitorMainActivity extends Activity {
 		} // TODO:modify to read choice of signal from Watcher.txt and do condition test
 
 	}
-	
+
 	private ServiceConnection mConnection = new ServiceConnection() {
 		// Called when the connection with the service is established
 		public void onServiceConnected(ComponentName className, IBinder service) {
@@ -256,12 +253,12 @@ try {
 		Log.i(TAG, "new intent: " + intent.toString());
 
 		this.startService(intent); // "set and forget" via IntentService
-} catch (Exception e) { 
+} catch (Exception e) {
 	Log.e(TAG, e.getMessage());
-	
+
 }
 	}
-	
+
 	protected void onStart() {
 		super.onStart();
 
@@ -304,11 +301,11 @@ try {
 		getMenuInflater().inflate(R.menu.signal_monitor_main, menu);
 		return true;
 	}
-	
+
 	public void onTrigger() {
 		Intent intent = new Intent(this, PostalService.class);
 		startService(intent);
-		
+
 	}
 
 	public void registerListener(String signalName, String threshold,

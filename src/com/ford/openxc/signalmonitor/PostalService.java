@@ -1,4 +1,4 @@
-package com.example.signalmonitor;
+package com.ford.openxc.signalmonitor;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.StringEntity;
@@ -12,7 +12,7 @@ import android.content.Intent;
 import android.util.Log;
 
 /**
- * 
+ *
  * @author mjohn706
  * The ultimate purpose is to do an HTTP Post, not a Get. But I want to get this running w/ the Get first
  */
