@@ -3,14 +3,10 @@ from flask import request
 
 app = Flask(__name__)
 
-@app.route('/')
-def index():
-    return 'Index page'
-
-@app.route('/posty', methods=['POST'])
+@app.route('/', methods=['POST'])
 def posty():
     print("Data")
-    print(request.data)
+    print(request.json)
     return "Thanks"
 
 if __name__ == '__main__':
