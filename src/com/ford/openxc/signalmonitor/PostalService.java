@@ -20,6 +20,7 @@ import android.util.Log;
 public class PostalService extends IntentService {
     private final static String TAG = "PostalService";
     public final static String INTENT_EXTRA_DATA_FLAG = "SNAPSHOT";
+    public final static String INTENT_HTTP_ENDPOINT = "ENDPOINT";
 
     public PostalService() {
         super(TAG);
@@ -33,8 +34,10 @@ public class PostalService extends IntentService {
         Log.i(TAG, "onHandleIntent Start");
 
         DefaultHttpClient httpClient = new DefaultHttpClient();
+        
+        String httpEndpoint = intent.getExtras().getString(INTENT_HTTP_ENDPOINT);
 
-        HttpPost httpPost = new HttpPost("http://192.168.2.160:5000/posty");
+        HttpPost httpPost = new HttpPost(httpEndpoint);
         //HttpPost httpPost = new HttpPost("http://shatechcrunchhana.sapvcm.com:8000/Ford/services/fordstatus.xsodata/FordStatus");
         // Uncomment above for Ford's server, though this is the wrong one.
         StringEntity stringEntity = null;

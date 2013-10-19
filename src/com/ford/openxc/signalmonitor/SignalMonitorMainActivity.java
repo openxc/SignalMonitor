@@ -36,10 +36,12 @@ import com.openxc.remote.VehicleServiceException;
  */
 public class SignalMonitorMainActivity extends Activity {
 
+    private static final String TAG = "SignalMonitor";
+    private static final String HTTP_POST_ENDPOINT = "http://localhost:5000/";
+    
     // per the tutorial, at object creation time:
     private VehicleManager mVehicleManager;
     private VehicleSnapshotSink mSnapshotSink = new VehicleSnapshotSink();
-    private static String TAG = "SignalMonitor";
     private String signal_threshold = "<"; // the default.
     private TextView mVehicleSpeedView;
 
@@ -209,6 +211,7 @@ public class SignalMonitorMainActivity extends Activity {
         Intent intent = new Intent(this, PostalService.class);
         intent.putExtra(PostalService.INTENT_EXTRA_DATA_FLAG,
                 mSnapshotSink.generateSnapshot());
+        intent.putExtra(PostalService.INTENT_HTTP_ENDPOINT, HTTP_POST_ENDPOINT);
         Log.i(TAG, "triggering PostalService with: " + intent);
         startService(intent);
     }
