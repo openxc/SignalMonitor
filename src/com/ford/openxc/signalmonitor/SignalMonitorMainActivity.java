@@ -37,7 +37,7 @@ import com.openxc.remote.VehicleServiceException;
 public class SignalMonitorMainActivity extends Activity {
 
     private static final String TAG = "SignalMonitor";
-    private static final String HTTP_POST_ENDPOINT = "http://localhost:5000/";
+    private static final String HTTP_POST_ENDPOINT = "http://your.hostname.here.com:5000/";
     
     // per the tutorial, at object creation time:
     private VehicleManager mVehicleManager;
