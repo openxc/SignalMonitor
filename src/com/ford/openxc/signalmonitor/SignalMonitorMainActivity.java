@@ -265,7 +265,7 @@ public class SignalMonitorMainActivity extends Activity {
                 Log.e(TAG, "Unrecognized Measurment type: " + e.toString());
             }
             // and now try using it, test Snapshot:
-            uploadSnapshot(); // for testing uploadSnapshot only.
+            //uploadSnapshot(); // for testing uploadSnapshot only. Now that triggering works, this is commented out.
 
         }
 

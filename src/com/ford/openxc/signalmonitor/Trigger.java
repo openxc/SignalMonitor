@@ -29,12 +29,16 @@ public class Trigger {
      * Threshold is considered met when trigger(threshold) value < current val for '<' etc. 
      */
     public boolean test(double val) {
-    	Log.i(TAG, "testing value= " + value + "val = " + val);
-        if (this.testCriterion == "<") {
+    	//Log.i(TAG, "testing value= " + value + "val = " + val);
+        if (this.testCriterion.equals("<>")) {
+        	//Log.i(TAG, "testing for value < val" + "or " + value + "<" + val);
             return (value < val);
-        } else if (this.testCriterion == ">") {
+        } else if (this.testCriterion.equals(">")) {
+        	//Log.i(TAG, "testing for value > val" + "or " + value + "<" + val);
             return (value > val);
-        } else
+        } else {
+        	//Log.i(TAG, "testCriterion = " + testCriterion);
             return false;
+        }
     }
 }

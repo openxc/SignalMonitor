@@ -30,21 +30,22 @@ public class PostalService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        Log.d(TAG, "onHandleIntent Start");
+        Log.i(TAG, "onHandleIntent Start");
 
         DefaultHttpClient httpClient = new DefaultHttpClient();
 
-        HttpPost httpPost = new HttpPost("http://shatechcrunchhana.sapvcm.com:8000/Ford/services/fordstatus.xsodata/FordStatus");
+        HttpPost httpPost = new HttpPost("http://192.168.2.160:5000/posty");
+        //HttpPost httpPost = new HttpPost("http://shatechcrunchhana.sapvcm.com:8000/Ford/services/fordstatus.xsodata/FordStatus");
         // Uncomment above for Ford's server, though this is the wrong one.
-        //HttpPost httpPost = new HttpPost("http://192.168.2.160:5000"); // my current local IP on computer.
-        //HttpPost httpPost = new HttpPost("http://shacricketwin.sapvcm.com:8080/FordData_v2/fordxctest_vs.jsp");
-        StringEntity stringEntity = null;
+            StringEntity stringEntity = null;
         try {
-            stringEntity = new StringEntity(
-                    intent.getExtras().getString(INTENT_EXTRA_DATA_FLAG),
-                    "UTF-8");
+            stringEntity = new StringEntity(intent.getExtras().getString(INTENT_EXTRA_DATA_FLAG), "UTF-8");
         } catch(UnsupportedEncodingException e) {
-            Log.w(TAG, "Unable to encode snapshot data into UTF-8");
+            Log.d(TAG, "Unable to encode snapshot data into UTF-8" + e.getMessage());
+            return;
+
+        } catch(Exception anyOtherException) {
+            Log.d(TAG, "Unexpected exception" + anyOtherException.getMessage());
             return;
         }
 
@@ -54,7 +55,7 @@ public class PostalService extends IntentService {
         try {
             response = httpClient.execute(httpPost);
         } catch(IOException e) {
-            Log.d(TAG, "Unable to make HTTP request", e);
+            Log.d(TAG, "Unable to make HTTP request" + e.getMessage());
             return;
         }
 
