@@ -42,27 +42,7 @@ public class SignalMonitorMainActivity extends Activity {
     // per the tutorial, at object creation time:
     private VehicleManager mVehicleManager;
     private VehicleSnapshotSink mSnapshotSink = new VehicleSnapshotSink();
-    private String signal_threshold = "<"; // the default.
-    private TextView mVehicleSpeedView;
-
-    // It is a small file, it should not take long, so we read it in here:
-    // Read in list of signals to monitor and threshold conditions/values
-    File sdcard = Environment.getExternalStorageDirectory();
-    File watchersFile = new File(sdcard, "Watchers.txt");
-
-    String watchersString = null;
-    StringBuffer watchersStringBuff = new StringBuffer();
-    String watchersLine;
-    JSONObject watchersObject;
-    String signal_name;
-    String threshold_type;
-    String threshold_value;
-    String team_id;
-
-    static String snapshot = null;
-
-    Trigger[]  triggers = new Trigger[20]; // surely never more than this. // Obsolete already?
-    HashMap<String, Trigger> NamesToTriggers = new HashMap<String, Trigger>();
+    private HashMap<String, Trigger> mNamesToTriggers = new HashMap<String, Trigger>();
 
     protected void onStart() {
         super.onStart();
@@ -74,9 +54,20 @@ public class SignalMonitorMainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //A block o' local variables
+        // It is a small file, it should not take long, so we read it in here:
+        // Read in list of signals to monitor and threshold conditions/values
+        File sdcard = Environment.getExternalStorageDirectory();
+        File watchersFile = new File(sdcard, "Watchers.txt");
+        StringBuffer watchersStringBuff = new StringBuffer();
+        JSONObject watchersObject = null;
+        String signal_name;
+        String threshold_type = "";
+        String threshold_value;
+        String team_id;
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signal_monitor_main);
-        mVehicleSpeedView = (TextView) findViewById(R.id.vehicle_speed);
         int lineNo = 0;
         BufferedReader br = null;
         try {
@@ -128,6 +119,8 @@ public class SignalMonitorMainActivity extends Activity {
                     // and now the all important value:
                     threshold_value = watchersObject.getString(signal_name);
 
+                    Trigger trigger = new Trigger(signal_name, threshold_value, threshold_type);
+                    mNamesToTriggers.put(signal_name, trigger);
                 } catch (IllegalStateException e1) {
                     Log.e(TAG, "IllegalStateException reading from newly created JSONObject" + e1.getMessage());
                 } catch (UnsupportedOperationException boohoo) {
@@ -139,8 +132,6 @@ public class SignalMonitorMainActivity extends Activity {
                     //setListeners (threshold_type, signal_name);
                 }
                 Log.i(TAG, "lineNo = " + lineNo);
-                triggers[lineNo] = new Trigger(signal_name, threshold_value, threshold_type);
-                NamesToTriggers.put(signal_name, triggers[lineNo]);
                 lineNo++;
             }
         } catch (IOException e) {
@@ -154,10 +145,6 @@ public class SignalMonitorMainActivity extends Activity {
                 } //TODO: obviate ts
             }
             Log.i(TAG, "Got it all");
-            Log.i(TAG, "Should be two triggers now:");
-            Log.i(TAG, "triggers[0] = " + triggers[0]);
-            Log.i(TAG, "triggers[1] = " + triggers[1]);
-
         }
     }
 
@@ -199,7 +186,7 @@ public class SignalMonitorMainActivity extends Activity {
 
             // "do stuff with the measurement"
             // what I do is test against a criterion, using my new Trigger class
-            Trigger ourTrigger = NamesToTriggers.get("vehicle_speed");
+            Trigger ourTrigger = mNamesToTriggers.get("vehicle_speed");
             if(ourTrigger != null) {
                 //Log.i(TAG, "Testing for speed " + ourTrigger.testCriterion + " speed");
                 if (ourTrigger.test(speed.getValue().doubleValue())) {
@@ -216,7 +203,7 @@ public class SignalMonitorMainActivity extends Activity {
 
             // "do stuff with the measurement"
             // what I do is test against a criterion, using my new Trigger class
-            Trigger ourTrigger = NamesToTriggers.get("engine_speed");
+            Trigger ourTrigger = mNamesToTriggers.get("engine_speed");
             if(ourTrigger != null) {
                 //Log.i(TAG, "Testing for engine speed " + ourTrigger.testCriterion + " speed");
                 if (ourTrigger.test(speed.getValue().doubleValue())){
