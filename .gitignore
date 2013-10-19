@@ -31,3 +31,15 @@ proguard/
 ?*~
 #?*#
 
+target
+bin
+gen
+.DS_Store
+/com/
+reference
+*.asc
+.settings
+.project
+.classpath
+*.releaseBackup
+release.properties

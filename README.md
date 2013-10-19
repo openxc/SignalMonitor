@@ -19,6 +19,11 @@ Q: what do we do if we have multiple signals that crossed the
 threshold? Probably the worst option would be to keep the agreed
 format, sending only one that changed each time.
 
+Tue Oct 15 20:33:28 PDT 2013
+
+Of the above milestones 2 and 3 are complete. 1 would be complete if I
+could test it 3-6 are all in progress.
+
 
 
 
