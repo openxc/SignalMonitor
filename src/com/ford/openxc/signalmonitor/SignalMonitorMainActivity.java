@@ -64,29 +64,6 @@ public class SignalMonitorMainActivity extends Activity {
     Trigger[]  triggers = new Trigger[20]; // surely never more than this. // Obsolete already?
     HashMap<String, Trigger> NamesToTriggers = new HashMap<String, Trigger>();
 
-    /**
-     *
-     * @param threshold
-     * @param sig
-     * This will create a Listener for the given signal and this listener in turn will do the test indicated
-     * by threshold, calling uploadSnapshot() to start sending all the data up to SAP server.
-     */
-    private void setListeners( String threshold, String sig) {
-        Log.i(TAG, "Stub for setting Listener for signal " + sig + " and threshold " + threshold + ".");
-        signal_threshold = threshold; // not actually using these yet
-        try {
-            mVehicleManager.addListener(VehicleSpeed.class, mSpeedListener);
-        } catch (VehicleServiceException e) {
-            // TODO Auto-generated catch block
-            Log.e(TAG, e.getMessage());
-
-        } catch (UnrecognizedMeasurementTypeException e) {
-            // TODO Auto-generated catch block
-            Log.e(TAG, e.getMessage());
-        } // TODO:modify to read choice of signal from Watcher.txt and do condition test
-
-    }
-
     protected void onStart() {
         super.onStart();
         Intent intent = new Intent(this, VehicleManager.class);
