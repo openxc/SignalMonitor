@@ -10,32 +10,33 @@ import android.util.Log;
 * in case I need thread safe?
  */
 public class Trigger {
-    private String name;
-    private double value;
-    public String testCriterion; // what before I called 'threshold_type'
+    private String mName;
+    private double mValue;
+    public String mTestCriterion; // what before I called 'threshold_type'
     private String TAG = "SignalMonitor";
 
 
     Trigger(String name, String value, String tCrit) {
-        this.name = name;
-        this.value = Double.parseDouble(value);
-        this.testCriterion = tCrit;
+        this.mName = name;
+        this.mValue = Double.parseDouble(value);
+        this.mTestCriterion = tCrit;
     }
-
+    
     /**
-     *
-     * Status: under test
-     * val is ultimately from a Measurement, .value a threshold value from Watchers.txt
-     * Threshold is considered met when trigger(threshold) value < current val for '<' etc. 
+     * Tests whether a trigger condition is met.  Currently we only trigger on doubles.
+     * Example: if we are testing the current value "val" against a trigger "> 20",
+     * test will return true if val > 20.
+     * @param val
+     * @return
      */
     public boolean test(double val) {
     	//Log.i(TAG, "testing value= " + value + "val = " + val);
-        if (this.testCriterion.equals("<>")) {
+        if (this.mTestCriterion.equals("<")) {
         	//Log.i(TAG, "testing for value < val" + "or " + value + "<" + val);
-            return (value < val);
-        } else if (this.testCriterion.equals(">")) {
+            return (val < mValue);
+        } else if (this.mTestCriterion.equals(">")) {
         	//Log.i(TAG, "testing for value > val" + "or " + value + "<" + val);
-            return (value > val);
+            return (val > mValue);
         } else {
         	//Log.i(TAG, "testCriterion = " + testCriterion);
             return false;

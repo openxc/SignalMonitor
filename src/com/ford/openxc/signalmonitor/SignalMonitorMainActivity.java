@@ -188,7 +188,7 @@ public class SignalMonitorMainActivity extends Activity {
             // what I do is test against a criterion, using my new Trigger class
             Trigger ourTrigger = mNamesToTriggers.get("vehicle_speed");
             if(ourTrigger != null) {
-                //Log.i(TAG, "Testing for speed " + ourTrigger.testCriterion + " speed");
+                Log.i(TAG, "Testing for speed " + ourTrigger.mTestCriterion + " speed");
                 if (ourTrigger.test(speed.getValue().doubleValue())) {
                     Log.i(TAG, "vehicle speed test passed");
                     uploadSnapshot();
@@ -205,7 +205,7 @@ public class SignalMonitorMainActivity extends Activity {
             // what I do is test against a criterion, using my new Trigger class
             Trigger ourTrigger = mNamesToTriggers.get("engine_speed");
             if(ourTrigger != null) {
-                //Log.i(TAG, "Testing for engine speed " + ourTrigger.testCriterion + " speed");
+                Log.i(TAG, "Testing for engine speed " + ourTrigger.mTestCriterion + " speed");
                 if (ourTrigger.test(speed.getValue().doubleValue())){
                     Log.i(TAG, "engine speed test passed");
                     uploadSnapshot();
