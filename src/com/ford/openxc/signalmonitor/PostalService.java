@@ -26,7 +26,7 @@ public class PostalService extends IntentService {
     }
 
     private String stubData =
-"[{\"timestamp\": \"1351181673.5829988\", \"name\": \"accelerator_pedal_position\", \"value\": \"0.0\"} ];";
+            "[{\"timestamp\": \"1351181673.5829988\", \"name\": \"accelerator_pedal_position\", \"value\": \"0.0\"} ];";
 
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -37,7 +37,7 @@ public class PostalService extends IntentService {
         HttpPost httpPost = new HttpPost("http://192.168.2.160:5000/posty");
         //HttpPost httpPost = new HttpPost("http://shatechcrunchhana.sapvcm.com:8000/Ford/services/fordstatus.xsodata/FordStatus");
         // Uncomment above for Ford's server, though this is the wrong one.
-            StringEntity stringEntity = null;
+        StringEntity stringEntity = null;
         try {
             stringEntity = new StringEntity(intent.getExtras().getString(INTENT_EXTRA_DATA_FLAG), "UTF-8");
         } catch(UnsupportedEncodingException e) {
